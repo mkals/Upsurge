@@ -122,12 +122,11 @@ open class ValueArray<Element: Value>: MutableLinearType, ExpressibleByArrayLite
 
     /// Construct a ValueArray of `count` elements, each initialized with `initializer`.
     public required init(count: IndexDistance, initializer: () -> Element) {
-        mutablePointer = UnsafeMutablePointer.allocate(capacity: count)
+        mutablePointer = UnsafeMutablePointer<Element>.allocate(capacity: count)
         capacity = count
         self.count = count
-        for i in 0..<count {
-            self[i] = initializer()
-        }
+        mutablePointer.initialize(repeating: initializer(), count: count)
+        // MK: added by me to keep from crashing ono simulators
     }
 
     deinit {
